@@ -1,0 +1,291 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import CreativeHero from '../components/CreativeHero';
+import CollectorProfileCard from '../components/CollectorProfileCard';
+import DashboardMetricCard from '../components/DashboardMetricCard';
+import ProjectCard from '../components/ProjectCard';
+import { Users, Target, Award, BarChart3, Zap, TrendingUp } from 'lucide-react';
+
+function CreativeHome() {
+  // Datos simulados para estudiantes tipo coleccionista
+  const students = [
+    {
+      name: 'Ana García',
+      tech: ['React', 'TypeScript', 'Node.js'],
+      avatar: '👩‍💻',
+      github: 'https://github.com/anag',
+      linkedin: 'https://linkedin.com/in/anag',
+      email: 'ana@example.com',
+      projects: 12,
+      contributions: 156
+    },
+    {
+      name: 'Carlos Mendoza',
+      tech: ['Python', 'Django', 'PostgreSQL'],
+      avatar: '👨‍💻',
+      github: 'https://github.com/carlosm',
+      linkedin: 'https://linkedin.com/in/carlosm',
+      email: 'carlos@example.com',
+      projects: 8,
+      contributions: 89
+    },
+    {
+      name: 'María López',
+      tech: ['Vue.js', 'Firebase', 'GraphQL'],
+      avatar: '👩‍💻',
+      github: 'https://github.com/marial',
+      projects: 15,
+      contributions: 203
+    },
+    {
+      name: 'José Ramírez',
+      tech: ['Flutter', 'Dart', 'REST'],
+      avatar: '👨‍💻',
+      github: 'https://github.com/joser',
+      linkedin: 'https://linkedin.com/in/joser',
+      projects: 9,
+      contributions: 112
+    },
+    {
+      name: 'Laura Torres',
+      tech: ['React Native', 'Expo', 'AWS'],
+      avatar: '👩‍💻',
+      github: 'https://github.com/lauram',
+      linkedin: 'https://linkedin.com/in/lauram',
+      email: 'laura@example.com',
+      projects: 11,
+      contributions: 187
+    },
+    {
+      name: 'Diego Fernández',
+      tech: ['Next.js', 'Prisma', 'TailwindCSS'],
+      avatar: '👨‍💻',
+      github: 'https://github.com/diegof',
+      projects: 7,
+      contributions: 95
+    }
+  ];
+
+  // Datos para métricas del dashboard
+  const metrics = [
+    {
+      title: 'Iniciativas Activas',
+      value: '24',
+      change: '+12%',
+      trend: 'up',
+      icon: Target
+    },
+    {
+      title: 'Proyectos Completados',
+      value: '89',
+      change: '+8%',
+      trend: 'up',
+      icon: Award
+    },
+    {
+      title: 'Estudiantes Registrados',
+      value: '524',
+      change: '+24%',
+      trend: 'up',
+      icon: Users
+    },
+    {
+      title: 'Impacto Regional',
+      value: '98%',
+      change: '+5%',
+      trend: 'up',
+      icon: TrendingUp
+    }
+  ];
+
+  // Proyectos destacados
+  const projects = [
+    {
+      id: 1,
+      title: 'Sistema de Gestión de Residuos IoT',
+      description: 'Plataforma web con integración IoT para optimizar la recolección y procesamiento de residuos urbanos en tiempo real.',
+      category: 'Sostenibilidad',
+      status: 'activa',
+      progress: 85,
+      students: 12,
+      icon: '♻️'
+    },
+    {
+      id: 2,
+      title: 'Marketplace Educativo Inteligente',
+      description: 'App móvil cross-platform con IA para intercambio de recursos educativos entre instituciones universitarias.',
+      category: 'Educación',
+      status: 'activa',
+      progress: 72,
+      students: 15,
+      icon: '📚'
+    },
+    {
+      id: 3,
+      title: 'Dashboard Financiero para PYMES',
+      description: 'Aplicación web con visualizaciones interactivas para gestión financiera y análisis predictivo para pequeñas empresas.',
+      category: 'Empresarial',
+      status: 'en-revision',
+      progress: 45,
+      students: 8,
+      icon: '📊'
+    }
+  ];
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40, scale: 0.95 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: [0.22, 0.9, 0.3, 1]
+      }
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-[#F9FAFB] to-white">
+      {/* Hero Section Disruptivo */}
+      <CreativeHero />
+
+      {/* Sección de Estudiantes - Fichas de Coleccionista */}
+      <section className="py-24 px-4 relative overflow-hidden">
+        {/* Fondo con textura sutil */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
+
+        <div className="container mx-auto max-w-[1280px] relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ type: "spring", stiffness: 200 }}
+              className="inline-flex items-center space-x-3 bg-gradient-to-r from-indigo-100 to-purple-100 px-6 py-3 rounded-full border-2 border-indigo-200 mb-6"
+            >
+              <Zap className="w-6 h-6 text-indigo-600" />
+              <span className="text-indigo-700 font-bold text-lg">Talento Destacado</span>
+            </motion.div>
+
+            <h2 className="font-poppins font-black text-5xl md:text-6xl text-[#0F172A] mb-6">
+              Nuestros <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Estudiantes</span>
+            </h2>
+            <p className="text-xl text-[#6B7280] max-w-2xl mx-auto font-inter">
+              Conoce al talento que está transformando la región
+            </p>
+          </motion.div>
+
+          {/* Grid de fichas de coleccionista */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {students.map((student, index) => (
+              <motion.div key={index} variants={itemVariants}>
+                <CollectorProfileCard student={student} />
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Sección de Proyectos */}
+      <section className="py-24 px-4 bg-white">
+        <div className="container mx-auto max-w-[1280px]">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-green-100 to-emerald-100 px-6 py-3 rounded-full border-2 border-green-200 mb-6">
+              <Target className="w-6 h-6 text-green-600" />
+              <span className="text-green-700 font-bold text-lg">Iniciativas Activas</span>
+            </div>
+
+            <h2 className="font-poppins font-black text-5xl md:text-6xl text-[#0F172A] mb-6">
+              Proyectos <span className="text-indigo-600">Destacados</span>
+            </h2>
+            <p className="text-xl text-[#6B7280] max-w-2xl mx-auto font-inter">
+              Únete a proyectos que generan impacto real
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {projects.map((project, index) => (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, y: 40, rotateY: -10 }}
+                whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.15, duration: 0.6 }}
+              >
+                <ProjectCard project={project} />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Dashboard Preview */}
+      <section className="py-24 px-4 bg-gradient-to-br from-gray-50 to-white">
+        <div className="container mx-auto max-w-[1280px]">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-purple-100 to-pink-100 px-6 py-3 rounded-full border-2 border-purple-200 mb-6">
+              <BarChart3 className="w-6 h-6 text-purple-600" />
+              <span className="text-purple-700 font-bold text-lg">Panel de Control</span>
+            </div>
+
+            <h2 className="font-poppins font-black text-5xl md:text-6xl text-[#0F172A] mb-6">
+              Dashboard de <span className="text-indigo-600">Gestión</span>
+            </h2>
+          </motion.div>
+
+          {/* Grid de métricas con diseño asimétrico */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {metrics.map((metric, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+                whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.4 }}
+                className={index % 2 === 0 ? '' : 'lg:mt-8'}
+              >
+                <DashboardMetricCard metric={metric} />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+export default CreativeHome;
+
