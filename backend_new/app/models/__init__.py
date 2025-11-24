@@ -12,3 +12,4 @@ from .criterion import Criterion
 from .comment import Comment
 from .audit import Audit
 from .notification import Notification
+from .postulacion import Postulacion

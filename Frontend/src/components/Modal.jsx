@@ -52,7 +52,7 @@ function Modal({
 
           {/* Modal Content */}
           <motion.div
-            className={`relative bg-white p-8 rounded-3xl shadow-glow max-w-2xl w-full mx-auto z-10 ${className}`}
+            className={`relative bg-white rounded-3xl shadow-glow max-w-2xl w-full mx-auto z-10 flex flex-col max-h-[90vh] ${className}`}
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -60,7 +60,7 @@ function Modal({
             {...props}
           >
             {title && (
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex-shrink-0 p-8 pb-4 flex justify-between items-center border-b border-gray-200">
                 <h2 id="modal-title" className="text-2xl font-poppins font-bold text-darkGray">
                   {title}
                 </h2>
@@ -73,7 +73,7 @@ function Modal({
                 </button>
               </div>
             )}
-            <div>{children}</div>
+            <div className="overflow-y-auto px-8 pb-8 pt-6">{children}</div>
           </motion.div>
         </div>
       )}

@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from app.db.base import Base
+from app.db.base_class import Base
 from sqlalchemy.sql import func
 
 class Initiative(Base):
@@ -17,3 +17,4 @@ class Initiative(Base):
     creator = relationship("User", back_populates="iniciativas_creadas")
     documentos = relationship("DocumentoIniciativa", back_populates="iniciativa")
     proyectos = relationship("Project", back_populates="initiative")
+    postulaciones = relationship("Postulacion", back_populates="iniciativa")

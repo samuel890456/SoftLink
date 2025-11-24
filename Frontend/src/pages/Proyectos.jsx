@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Modal from '../components/Modal';
 import Button from '../components/Button';
@@ -23,15 +24,21 @@ function Proyectos() {
     setLoading(true);
     try {
       const params = {
-        page: currentPage,
+        skip: (currentPage - 1) * itemsPerPage,
         limit: itemsPerPage,
       };
-      if (filterStatus !== 'all') {
-        params.estado = filterStatus; // Assuming API uses 'estado' for status filter
-      }
       const response = await proyectosService.getProyectos(params);
-      setAllProjects(response.data.data || []);
-      setTotalPages(Math.ceil(response.data.meta.total / itemsPerPage));
+      // La API devuelve directamente un array
+      const projectsData = Array.isArray(response) ? response : (response?.data || []);
+      
+      // Filtrar por estado si es necesario
+      let filteredProjects = projectsData;
+      if (filterStatus !== 'all') {
+        filteredProjects = filteredProjects.filter(proj => proj.estado === filterStatus);
+      }
+      
+      setAllProjects(filteredProjects);
+      setTotalPages(Math.ceil(filteredProjects.length / itemsPerPage) || 1);
     } catch (err) {
       setError('Error al cargar los proyectos.');
       console.error("Error fetching projects:", err);
@@ -43,6 +50,10 @@ function Proyectos() {
   useEffect(() => {
     fetchProyectos();
   }, [currentPage, filterStatus]);
+
+  // Separar proyectos activos y completados
+  const activeProjects = allProjects.filter(proj => proj.estado === 'activo' || !proj.estado);
+  const completedProjects = allProjects.filter(proj => proj.estado === 'completado' || proj.estado === 'completada');
 
   if (loading) {
     return (
@@ -124,39 +135,41 @@ function Proyectos() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {activeProjects.map((project, index) => (
-              <motion.div key={project.id} variants={itemVariants}>
+              <motion.div key={project.id_proyecto || index} variants={itemVariants}>
                 <Card className="hover:shadow-glow transition-all-300 cursor-pointer h-full flex flex-col">
                   <div className="flex items-start justify-between mb-4">
                     <div className="bg-gradient-to-br from-orange-400 to-orange-600 p-3 rounded-2xl">
                       <Rocket className="w-6 h-6 text-white" />
                     </div>
                     <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-semibold capitalize">
-                      {project.status}
+                      {project.estado || 'activo'}
                     </span>
                   </div>
 
                   <h3 className="text-xl font-semibold text-darkGray mb-3 line-clamp-2">
-                    {project.title}
+                    {project.titulo}
                   </h3>
                   <p className="text-gray-600 text-sm mb-4 flex-grow line-clamp-2">
-                    {project.description}
+                    {project.descripcion || 'Sin descripción'}
                   </p>
 
                   <div className="space-y-3 mb-4">
                     <div className="flex items-center text-sm text-gray-600">
                       <Users className="w-4 h-4 mr-2" />
                       <span className="truncate">
-                        {project.students ? project.students.map(s => s.nombre).join(', ') : 'Sin estudiantes asignados'}
+                        {project.estudiantes_asignados && Array.isArray(project.estudiantes_asignados) 
+                          ? project.estudiantes_asignados.map(s => s.student?.nombre || 'Estudiante').join(', ') 
+                          : 'Sin estudiantes asignados'}
                       </span>
                     </div>
-                    <ProgressBar progress={project.progress || 0} />
+                    <ProgressBar progress={project.progreso || 0} />
                   </div>
 
-                  <Link to={`/proyectos/${project.id}`}>
+                  <Link to={`/proyectos/${project.id_proyecto}`}>
                     <Button
                       variant="primary"
                       className="w-full"
-                      aria-label={`Ver detalles de ${project.title}`}
+                      aria-label={`Ver detalles de ${project.titulo}`}
                     >
                       Ver Detalles
                     </Button>
@@ -198,7 +211,7 @@ function Proyectos() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {completedProjects.map((project, index) => (
-              <motion.div key={project.id} variants={itemVariants}>
+              <motion.div key={project.id_proyecto || index} variants={itemVariants}>
                 <Card className="hover:shadow-glow transition-all-300 border-2 border-green-100 h-full flex flex-col">
                   <div className="flex items-start justify-between mb-4">
                     <div className="bg-gradient-to-br from-accent to-green-600 p-3 rounded-2xl">
@@ -207,29 +220,27 @@ function Proyectos() {
                   </div>
 
                   <h3 className="text-xl font-semibold text-darkGray mb-3 line-clamp-2">
-                    {project.title}
+                    {project.titulo}
                   </h3>
                   <p className="text-gray-600 text-sm mb-4 flex-grow line-clamp-2">
-                    {project.description}
+                    {project.descripcion || 'Sin descripción'}
                   </p>
 
                   <div className="space-y-2 mb-4">
-                    {project.impact && (
+                    {project.initiative?.impacto && (
                       <div className="flex items-center text-sm text-gray-600">
                         <TrendingUp className="w-4 h-4 mr-2" />
-                        <span>{project.impact}</span>
+                        <span>{project.initiative.impacto}</span>
                       </div>
                     )}
-                    {project.testimonial && (
-                      <p className="text-sm text-gray-600 italic line-clamp-2">
-                        "{project.testimonial}"
-                      </p>
-                    )}
+                    <ProgressBar progress={project.progreso || 100} />
                   </div>
 
-                  <Button variant="success" className="w-full" size="sm">
-                    Ver Testimonio
-                  </Button>
+                  <Link to={`/proyectos/${project.id_proyecto}`}>
+                    <Button variant="success" className="w-full" size="sm">
+                      Ver Detalles
+                    </Button>
+                  </Link>
                 </Card>
               </motion.div>
             ))}

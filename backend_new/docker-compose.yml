@@ -5,6 +5,7 @@ services:
     build: .
     volumes:
       - .:/app
+      - static_uploads_data:/app/static/uploads
     ports:
       - "8000:8000"
     env_file:
@@ -27,3 +28,4 @@ services:
 
 volumes:
   postgres_data:
+  static_uploads_data:

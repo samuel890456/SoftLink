@@ -9,6 +9,8 @@ import estudiantesService from '../services/estudiantesService';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useAuth } from '../context/AuthContext'; // Import useAuth
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { GraduationCap, Plus, Filter, Mail, Code, Github, ExternalLink } from 'lucide-react';
 
 const studentRegisterSchema = yup.object().shape({
@@ -30,6 +32,8 @@ function Estudiantes() {
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 9; // Define how many students per page
 
+  const { user } = useAuth(); // Get user from AuthContext
+  const navigate = useNavigate(); // Initialize useNavigate
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(studentRegisterSchema),
   });
@@ -38,13 +42,25 @@ function Estudiantes() {
     setLoading(true);
     try {
       const params = {
-        page: currentPage,
+        skip: (currentPage - 1) * itemsPerPage,
         limit: itemsPerPage,
       };
-      if (filterTechnology !== 'all') params.technologies = filterTechnology;
       const response = await estudiantesService.getEstudiantes(params);
-      setStudents(response.data.data || []); // Assuming response.data contains { data: [], meta: {} }
-      setTotalPages(Math.ceil(response.data.meta.total / itemsPerPage));
+      // La API devuelve directamente un array de usuarios
+      const usersData = Array.isArray(response) ? response : (response?.data || []);
+      
+      // Filtrar solo estudiantes (id_rol === 2)
+      let estudiantesData = usersData.filter(user => user.id_rol === 2);
+      
+      // Filtrar por tecnología si es necesario
+      if (filterTechnology !== 'all') {
+        estudiantesData = estudiantesData.filter(student => 
+          student.tecnologias && student.tecnologias.includes(filterTechnology)
+        );
+      }
+      
+      setStudents(estudiantesData);
+      setTotalPages(Math.ceil(estudiantesData.length / itemsPerPage) || 1);
     } catch (err) {
       setError('Error al cargar los estudiantes.');
       console.error("Error fetching students:", err);
@@ -147,23 +163,36 @@ function Estudiantes() {
 
       {/* Register Button */}
       <div className="mb-6 flex justify-end">
-        <Button
-          onClick={() => setShowRegisterForm(!showRegisterForm)}
-          variant={showRegisterForm ? 'secondary' : 'primary'}
-          aria-label={showRegisterForm ? 'Cancelar registro' : 'Registrar nuevo estudiante'}
-        >
-          {showRegisterForm ? (
-            <>
-              <Plus className="w-5 h-5 mr-2" />
-              Cancelar
-            </>
-          ) : (
-            <>
-              <Plus className="w-5 h-5 mr-2" />
-              Nuevo Estudiante
-            </>
-          )}
-        </Button>
+        {!user ? (
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/register')}
+            className="flex items-center space-x-2 px-6 py-3 rounded-2xl font-semibold transition-all-300 focus:outline-none focus:ring-4 focus:ring-primary/30 bg-primary text-white hover:bg-indigo-700 hover:shadow-glow"
+            aria-label="Registrarse para crear un perfil de estudiante"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Registrarse como Estudiante</span>
+          </motion.button>
+        ) : (user.id_rol === 1) && ( // Show only if Coordinator (1)
+          <Button
+            onClick={() => setShowRegisterForm(!showRegisterForm)}
+            variant={showRegisterForm ? 'secondary' : 'primary'}
+            aria-label={showRegisterForm ? 'Cancelar registro' : 'Registrar nuevo estudiante'}
+          >
+            {showRegisterForm ? (
+              <>
+                <Plus className="w-5 h-5 mr-2" />
+                Cancelar
+              </>
+            ) : (
+              <>
+                <Plus className="w-5 h-5 mr-2" />
+                Nuevo Estudiante
+              </>
+            )}
+          </Button>
+        )}
       </div>
 
       {/* Register Form */}

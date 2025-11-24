@@ -34,7 +34,12 @@ class CRUDUser:
             github=user.github,
             tecnologias=user.tecnologias,
             foto=user.foto,
-            id_rol=user.id_rol if user.id_rol is not None else 1 # Assign default role 1 (Coordinator)
+            hoja_vida=user.hoja_vida, # Campo añadido
+            bio=user.bio,
+            sitio_web=user.sitio_web,
+            direccion=user.direccion,
+            identificador_fiscal=user.identificador_fiscal,
+            id_rol=user.id_rol if user.id_rol is not None else 1
         )
         db.add(db_user)
         await db.commit()
@@ -58,8 +63,10 @@ class CRUDUser:
             setattr(db_user, key, value)
         
         await db.commit()
-        await db.refresh(db_user)
-        return db_user
+        # After committing, re-query the user to load the 'role' relationship
+        # This avoids the "MissingGreenlet" error during response serialization
+        updated_user = await self.get_user(db, user_id)
+        return updated_user
 
     async def delete_user(self, db: AsyncSession, user_id: int) -> User | None:
         db_user = await self.get_user(db, user_id)

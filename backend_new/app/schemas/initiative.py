@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class InitiativeBase(BaseModel):
@@ -20,8 +20,7 @@ class InitiativeInDBBase(InitiativeBase):
     id_iniciativa: int
     fecha_creacion: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class Initiative(InitiativeInDBBase):
     pass

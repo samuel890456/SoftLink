@@ -172,29 +172,28 @@ function Contacto() {
                 />
               </div>
 
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <Button
                 type="submit"
+                variant="primary"
                 disabled={isSubmitting}
-                className="w-full bg-primary text-white py-3 rounded-2xl font-semibold hover:bg-indigo-700 hover:shadow-glow transition-all-300 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-primary/30 flex items-center justify-center space-x-2"
+                className="w-full flex items-center justify-center space-x-2"
               >
                 {isSubmitting ? (
-                  <span className="flex items-center justify-center">
+                  <>
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"
+                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                     />
-                    Enviando...
-                  </span>
+                    <span>Enviando...</span>
+                  </>
                 ) : (
                   <>
                     <Send className="w-5 h-5" />
                     <span>Enviar Mensaje</span>
                   </>
                 )}
-              </motion.button>
+              </Button>
             </form>
           </Card>
         </motion.div>

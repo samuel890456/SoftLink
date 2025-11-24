@@ -27,6 +27,11 @@ CREATE TABLE usuarios (
     github VARCHAR(255),
     tecnologias TEXT,
     foto VARCHAR(255), -- ruta o URL a la imagen
+    hoja_vida VARCHAR(255), -- ruta o URL a la hoja de vida (CV)
+    bio TEXT, -- Nuevo campo para descripción general
+    sitio_web VARCHAR(255), -- Nuevo campo para sitio web de empresa/portafolio
+    direccion VARCHAR(255), -- Nuevo campo para dirección de empresa
+    identificador_fiscal VARCHAR(50), -- Nuevo campo para DNI/identificador fiscal de empresa
     id_rol INT REFERENCES roles(id_rol) ON DELETE SET NULL,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -173,6 +178,19 @@ CREATE TABLE auditoria (
     id_usuario INT REFERENCES usuarios(id_usuario) ON DELETE SET NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     detalles TEXT
+);
+
+-- =====================================================
+-- TABLA: postulaciones
+-- =====================================================
+CREATE TABLE postulaciones (
+    id_postulacion SERIAL PRIMARY KEY,
+    id_iniciativa INT REFERENCES iniciativas(id_iniciativa) ON DELETE CASCADE,
+    id_estudiante INT REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    fecha_postulacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    estado VARCHAR(30) DEFAULT 'pendiente', -- pendiente | aceptada | rechazada
+    mensaje TEXT, -- Mensaje opcional del estudiante al postularse
+    UNIQUE(id_iniciativa, id_estudiante) -- Evitar duplicados
 );
 
 -- =====================================================

@@ -11,3 +11,6 @@ python-dotenv
 pydantic-settings
 email-validator
 bcrypt
+pytest
+httpx
+pytest-asyncio

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import date
 from app.schemas.initiative import Initiative
 from app.schemas.user import User
@@ -23,8 +23,7 @@ class ProjectUpdate(ProjectBase):
 class ProjectInDBBase(ProjectBase):
     id_proyecto: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class Project(ProjectInDBBase):
     initiative: Initiative | None = None

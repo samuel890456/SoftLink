@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class AuditBase(BaseModel):
@@ -18,8 +18,7 @@ class AuditInDBBase(AuditBase):
     id_log: int
     fecha: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class Audit(AuditInDBBase):
     pass

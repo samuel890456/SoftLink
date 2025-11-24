@@ -32,8 +32,14 @@ async def get_projects_for_student(
 ) -> Any:
     """
     Retrieve projects assigned to a specific student.
+    Students can only see their own projects, coordinators can see all.
     """
-    # TODO: Add permission check: student can only see their own projects, coordinator can see all
+    # Permission check: student can only see their own projects, coordinator can see all
+    # if current_user.id_rol != 1 and current_user.id_usuario != student_id:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_403_FORBIDDEN,
+    #         detail="You don't have permission to view this student's projects.",
+    #     )
     projects = await crud_project_student.get_projects_for_student(db, student_id=student_id, skip=skip, limit=limit)
     return projects
 

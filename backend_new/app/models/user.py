@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
-from app.db.base import Base
+from app.db.base_class import Base
 from sqlalchemy.sql import func
 
 class User(Base):
@@ -13,6 +13,13 @@ class User(Base):
     github = Column(String(255))
     tecnologias = Column(Text)
     foto = Column(String(255))
+    hoja_vida = Column(String(255)) # Ruta o URL a la hoja de vida (CV)
+    # Nuevos campos
+    bio = Column(Text) # Para descripción general de usuario/empresa
+    sitio_web = Column(String(255)) # Para el sitio web de la empresa o portafolio
+    direccion = Column(String(255)) # Para la dirección de la empresa
+    identificador_fiscal = Column(String(50)) # Para el DNI o número de identificación fiscal de la empresa
+
     id_rol = Column(Integer, ForeignKey("roles.id_rol", ondelete="SET NULL"))
     fecha_registro = Column(DateTime, server_default=func.now())
 
@@ -27,3 +34,4 @@ class User(Base):
     mensajes_recibidos = relationship("Message", foreign_keys="[Message.id_destinatario]", back_populates="receiver")
     notificaciones = relationship("Notification", back_populates="user")
     auditorias = relationship("Audit", back_populates="user")
+    postulaciones = relationship("Postulacion", back_populates="estudiante")

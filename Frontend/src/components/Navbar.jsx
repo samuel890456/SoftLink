@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion";
 import { Menu, X, GraduationCap, LogOut, User, LayoutDashboard } from "lucide-react";
 import { useState } from "react";
+import Button from "./Button";
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -20,9 +21,11 @@ function Navbar() {
     { to: "/estudiantes", label: "Estudiantes", id: "nav-estudiantes" },
     { to: "/freelancer", label: "FreeLancer", id: "nav-freelancer" },
     { to: "/proyectos", label: "Proyectos", id: "nav-proyectos" },
+    { to: "/criterios", label: "Criterios", id: "nav-criterios" },
     { to: "/contacto", label: "Contacto", id: "nav-contacto" },
-    { to: "/panel", label: "Panel", id: "nav-panel", roles: [1, 3, 4] }, // Coordinator, Empresa, Admin
-    { to: "/perfil", label: "Perfil", id: "nav-perfil", roles: [1, 2, 3, 4] }, // All authenticated users
+    { to: "/panel", label: "Panel Coordinador", id: "nav-panel-coord", roles: [1] }, // Coordinator only
+    { to: "/panel-empresa", label: "Panel Empresa", id: "nav-panel-empresa", roles: [3] }, // Company only
+    { to: "/perfil", label: "Perfil", id: "nav-perfil", roles: [1, 2, 3] }, // All authenticated users
   ];
 
   const containerVariants = {
@@ -102,36 +105,33 @@ function Navbar() {
           {/* Auth Buttons Desktop */}
           <div className="hidden lg:flex items-center space-x-3">
             {user ? (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <Button
+                variant="danger"
                 onClick={handleLogout}
-                className="flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-2xl hover:bg-red-600 transition-all-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                aria-label="Cerrar sesión"
+                ariaLabel="Cerrar sesión"
+                className="flex items-center space-x-2"
               >
                 <LogOut className="w-5 h-5" />
                 <span>Cerrar</span>
-              </motion.button>
+              </Button>
             ) : (
               <>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Link
-                    to="/register"
-                    className="px-4 py-2 bg-accent tw-gradient-via rounded-2xl hover:bg-gray-100 transition-all-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
-                    aria-label="Crear una cuenta"
+                <Link to="/register">
+                  <Button
+                    variant="success"
+                    ariaLabel="Crear una cuenta"
                   >
                     Registro
-                  </Link>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Link
-                    to="/login"
-                    className="px-4 py-2 bg-primary tw-gradient-via rounded-2xl hover:shadow-glow transition-all-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                    aria-label="Iniciar sesión"
+                  </Button>
+                </Link>
+                <Link to="/login">
+                  <Button
+                    variant="primary"
+                    ariaLabel="Iniciar sesión"
                   >
                     Iniciar Sesión
-                  </Link>
-                </motion.div>
+                  </Button>
+                </Link>
               </>
             )}
           </div>
@@ -175,31 +175,42 @@ function Navbar() {
             })}
             <div className="pt-4 space-y-2 border-t-2 border-lightGray">
               {user ? (
-                <button
+                <Button
+                  variant="danger"
                   onClick={() => {
                     handleLogout();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="w-full flex items-center space-x-2 px-4 py-3 bg-red-500 text-white rounded-2xl transition-all-300"
+                  className="w-full flex items-center justify-center space-x-2"
                 >
                   <LogOut className="w-5 h-5" />
                   <span>Cerrar Sesión</span>
-                </button>
+                </Button>
               ) : (
                 <>
                   <Link
                     to="/register"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="block px-4 py-3 bg-accent text-white rounded-2xl text-center transition-all-300"
+                    className="block"
                   >
-                    Registro
+                    <Button
+                      variant="success"
+                      className="w-full"
+                    >
+                      Registro
+                    </Button>
                   </Link>
                   <Link
                     to="/login"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="block px-4 py-3 bg-primary text-white rounded-2xl text-center transition-all-300"
+                    className="block"
                   >
-                    Iniciar Sesión
+                    <Button
+                      variant="primary"
+                      className="w-full"
+                    >
+                      Iniciar Sesión
+                    </Button>
                   </Link>
                 </>
               )}

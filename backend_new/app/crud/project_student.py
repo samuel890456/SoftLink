@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 from app.models.project_student import ProjectStudent
 from app.schemas.project_student import ProjectStudentCreate, ProjectStudentUpdate
 
@@ -16,7 +17,13 @@ class CRUDProjectStudent:
         return result.scalars().all()
 
     async def get_projects_for_student(self, db: AsyncSession, student_id: int, skip: int = 0, limit: int = 100) -> list[ProjectStudent]:
-        result = await db.execute(select(ProjectStudent).where(ProjectStudent.id_estudiante == student_id).offset(skip).limit(limit))
+        result = await db.execute(
+            select(ProjectStudent)
+            .options(selectinload(ProjectStudent.project))
+            .where(ProjectStudent.id_estudiante == student_id)
+            .offset(skip)
+            .limit(limit)
+        )
         return result.scalars().all()
 
     async def create_project_student(self, db: AsyncSession, project_student: ProjectStudentCreate) -> ProjectStudent:

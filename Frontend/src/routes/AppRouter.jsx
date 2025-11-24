@@ -10,6 +10,7 @@ import Freelancer from "../pages/Freelancer";
 import Proyectos from "../pages/Proyectos";
 import ProyectoDetalle from "../pages/ProyectoDetalle";
 import Contacto from "../pages/Contacto";
+import Criterios from "../pages/Criterios";
 import Panel from "../pages/Panel";
 import Login from "../pages/Login";
 import RegisterChoice from "../pages/RegisterChoice"; // Import choice component
@@ -18,8 +19,10 @@ import RegisterCompany from "../pages/RegisterCompany"; // Import company regist
 import ForgotPassword from "../pages/ForgotPassword";
 import Perfil from "../pages/Perfil";
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+
 import ProtectedRoute from "../components/ProtectedRoute";
+
+import PanelEmpresa from "../pages/PanelEmpresa"; // Importar el nuevo panel
 
 function AppRouter() {
   return (
@@ -37,11 +40,20 @@ function AppRouter() {
             <Route path="/proyectos" element={<Proyectos />} />
             <Route path="/proyectos/:id" element={<ProyectoDetalle />} />
             <Route path="/contacto" element={<Contacto />} />
+            <Route path="/criterios" element={<Criterios />} />
             <Route
               path="/panel"
               element={
-                <ProtectedRoute requiredRoles={[1, 3]}> {/* Assuming 1: Coordinator, 3: Admin */}
+                <ProtectedRoute requiredRoles={[1]}> {/* Solo Coordinador */}
                   <Panel />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/panel-empresa"
+              element={
+                <ProtectedRoute requiredRoles={[3]}> {/* Solo Empresa */}
+                  <PanelEmpresa />
                 </ProtectedRoute>
               }
             />
@@ -60,7 +72,7 @@ function AppRouter() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
           </Routes>
         </main>
-        <Footer />
+
       </div>
     </BrowserRouter>
   );

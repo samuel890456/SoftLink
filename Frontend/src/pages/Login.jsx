@@ -16,25 +16,33 @@ function Login() {
     e.preventDefault();
     setError('');
 
-    const loginResponse = await login(email, password);
-    if (loginResponse) {
-      // Redirigir según el rol
-      switch (loginResponse.id_rol) {
-        case 1: // Coordinador
-          navigate('/panel');
-          break;
-        case 2: // Estudiante
-          navigate('/proyectos'); // O una ruta específica para estudiantes
-          break;
-        case 3: // Empresa
-          navigate('/iniciativas'); // O una ruta específica para empresas
-          break;
-        default:
-          navigate('/'); // Redirección por defecto
-          break;
+    try {
+      const loginResponse = await login(email, password);
+      if (loginResponse && loginResponse.access_token) {
+        // Obtener el id_rol del usuario desde el contexto o la respuesta
+        const userRole = loginResponse.id_rol;
+        
+        // Redirigir según el rol
+        switch (userRole) {
+          case 1: // Coordinador
+            navigate('/panel');
+            break;
+          case 2: // Estudiante
+            navigate('/proyectos');
+            break;
+          case 3: // Empresa
+            navigate('/iniciativas');
+            break;
+          default:
+            navigate('/');
+            break;
+        }
+      } else {
+        setError('Credenciales inválidas. Por favor, inténtalo de nuevo.');
       }
-    } else {
-      setError('Credenciales inválidas. Por favor, inténtalo de nuevo.');
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err.message || 'Error al iniciar sesión. Por favor, inténtalo de nuevo.');
     }
   };
 
@@ -151,7 +159,7 @@ function Login() {
               disabled={isLoading}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-primary text-white py-3 rounded-2xl font-semibold hover:bg-indigo-700 hover:shadow-glow transition-all-300 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-primary/30"
+              className="w-full bg-purple-600 text-white py-3 rounded-md font-semibold text-lg flex items-center justify-center transition duration-200 ease-in-out hover:bg-purple-700"
               aria-label="Iniciar sesión"
             >
               {isLoading ? (

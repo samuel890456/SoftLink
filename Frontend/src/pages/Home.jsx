@@ -5,7 +5,7 @@ import {
   ArrowRight, GraduationCap, Rocket, TrendingUp, Users, Award, 
   CheckCircle, Clock, Code2, Globe, Briefcase, Target, Sparkles,
   Star, Zap, BarChart3, PieChart, Activity, UserCheck, Mail, 
-  Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Github, Lightbulb
+  Phone, MapPin, Facebook, Twitter, Linkedin, Instagram, Github, Lightbulb, FileText
 } from 'lucide-react';
 import iniciativasService from '../services/iniciativasService';
 import usuariosService from '../services/usuariosService';
@@ -34,10 +34,11 @@ function Home() {
       try {
         setLoadingInitiatives(true);
         const response = await iniciativasService.getIniciativas({ limit: 4 });
-        
-        setInitiatives(Array.isArray(response.data) ? response.data : []);
+        // La API devuelve directamente un array
+        const initiativesData = Array.isArray(response) ? response : [];
+        setInitiatives(initiativesData.slice(0, 4));
       } catch (error) {
-       
+        console.error("Error fetching initiatives:", error);
         setErrorInitiatives("Error al cargar las iniciativas.");
       } finally {
         setLoadingInitiatives(false);
@@ -54,11 +55,13 @@ function Home() {
     const fetchStudents = async () => {
       try {
         setLoadingStudents(true);
-        const response = await usuariosService.getUsuarios({ limit: 5 });
-        
-        setStudents(Array.isArray(response.data) ? response.data : []);
+        const response = await usuariosService.getUsuarios({ limit: 100 });
+        // La API devuelve directamente un array, filtrar solo estudiantes
+        const usersData = Array.isArray(response) ? response : [];
+        const estudiantes = usersData.filter(u => u.id_rol === 2).slice(0, 5);
+        setStudents(estudiantes);
       } catch (error) {
-        
+        console.error("Error fetching students:", error);
         setErrorStudents("Error al cargar los estudiantes.");
       } finally {
         setLoadingStudents(false);
@@ -75,9 +78,14 @@ function Home() {
     const fetchProjects = async () => {
       try {
         setLoadingProjects(true);
-        const response = await proyectosService.getProyectos({ limit: 3 });
-        setProjects(Array.isArray(response.data) ? response.data : []);
+        const response = await proyectosService.getProyectos({ limit: 100 });
+        // La API devuelve directamente un array
+        const projectsData = Array.isArray(response) ? response : [];
+        // Filtrar solo proyectos activos
+        const activeProjects = projectsData.filter(p => p.estado === 'activo' || !p.estado).slice(0, 3);
+        setProjects(activeProjects);
       } catch (error) {
+        console.error("Error fetching projects:", error);
         setErrorProjects("Error al cargar los proyectos.");
       } finally {
         setLoadingProjects(false);
@@ -95,20 +103,26 @@ function Home() {
       try {
         setLoadingMetrics(true);
         const [initiativesRes, projectsRes, studentsRes] = await Promise.all([
-          iniciativasService.getIniciativas(),
-          proyectosService.getProyectos(),
-          usuariosService.getUsuarios(),
+          iniciativasService.getIniciativas({ limit: 1000 }),
+          proyectosService.getProyectos({ limit: 1000 }),
+          usuariosService.getUsuarios({ limit: 1000 }),
         ]);
         
+        // La API devuelve arrays directamente
+        const initiatives = Array.isArray(initiativesRes) ? initiativesRes : [];
+        const projects = Array.isArray(projectsRes) ? projectsRes : [];
+        const users = Array.isArray(studentsRes) ? studentsRes : [];
+        const estudiantes = users.filter(u => u.id_rol === 2);
+        const proyectosCompletados = projects.filter(p => p.estado === 'completado' || p.estado === 'completada');
 
         const newMetrics = [
-          { value: initiativesRes.length, label: 'Iniciativas Activas', icon: Lightbulb, color: 'from-blue-500 to-cyan-500' },
-          { value: projectsRes.length, label: 'Proyectos Completados', icon: CheckCircle, color: 'from-green-500 to-emerald-500' },
-          { value: studentsRes.length, label: 'Estudiantes Registrados', icon: Users, color: 'from-purple-500 to-pink-500' }
+          { value: initiatives.length, label: 'Iniciativas Activas', icon: Lightbulb, color: 'from-blue-500 to-cyan-500' },
+          { value: proyectosCompletados.length, label: 'Proyectos Completados', icon: CheckCircle, color: 'from-green-500 to-emerald-500' },
+          { value: estudiantes.length, label: 'Estudiantes Registrados', icon: Users, color: 'from-purple-500 to-pink-500' }
         ];
         setMetrics(newMetrics);
       } catch (error) {
-        
+        console.error("Error fetching metrics:", error);
         setErrorMetrics("Error al cargar las métricas.");
       } finally {
         setLoadingMetrics(false);
@@ -270,66 +284,69 @@ function Home() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            {initiatives && initiatives.map((initiative, index) => (
-              <motion.div
-                key={initiative.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group bg-gradient-to-br from-white to-gray-50 p-8 rounded-3xl border-2 border-gray-100 hover:border-primary/30 hover:shadow-2xl transition-all-300 cursor-pointer"
-              >
-                <div className="flex items-start justify-between mb-6">
-                  <div className="text-5xl">{initiative.icon}</div>
-                  <div className="flex items-center space-x-2">
-                    <span className={`px-4 py-2 rounded-full text-sm font-semibold ${
-                      initiative.status === 'Activa' ? 'bg-green-100 text-accent' :
-                      initiative.status === 'Nueva' ? 'bg-blue-100 text-primary' :
-                      'bg-gray-100 text-gray-600'
-                    }`}>
-                      {initiative.status}
-                    </span>
-                  </div>
-                </div>
+          {loadingInitiatives ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600">Cargando iniciativas...</p>
+            </div>
+          ) : initiatives.length > 0 ? (
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              {initiatives.map((initiative, index) => (
+                <Link key={initiative.id_iniciativa || index} to={`/iniciativas/${initiative.id_iniciativa}`}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="group bg-gradient-to-br from-white to-gray-50 p-8 rounded-3xl border-2 border-gray-100 hover:border-primary/30 hover:shadow-2xl transition-all-300 cursor-pointer"
+                  >
+                    <div className="flex items-start justify-between mb-6">
+                      <div className="bg-gradient-to-br from-primary to-indigo-700 p-4 rounded-2xl">
+                        <Lightbulb className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                          initiative.estado === 'completada' ? 'bg-green-100 text-accent' :
+                          initiative.estado === 'en desarrollo' ? 'bg-blue-100 text-primary' :
+                          'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {initiative.estado || 'pendiente'}
+                        </span>
+                      </div>
+                    </div>
 
-                <h3 className="text-2xl font-bold text-darkGray mb-3 group-hover:text-primary transition-colors">
-                  {initiative.title}
-                </h3>
+                    <h3 className="text-2xl font-bold text-darkGray mb-3 group-hover:text-primary transition-colors">
+                      {initiative.nombre}
+                    </h3>
 
-                <p className="text-gray-600 mb-4 line-clamp-2">{initiative.description}</p>
+                    <p className="text-gray-600 mb-4 line-clamp-3">{initiative.descripcion || 'Sin descripción'}</p>
 
-                <div className="flex items-center space-x-4 text-sm text-gray-500 mb-6">
-                  <div className="flex items-center space-x-1">
-                    <Users className="w-4 h-4" />
-                    <span>{initiative.students} estudiantes</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <TrendingUp className="w-4 h-4" />
-                    <span>{initiative.progress}% completado</span>
-                  </div>
-                </div>
+                    <div className="flex items-center space-x-4 text-sm text-gray-500 mb-6">
+                      <div className="flex items-center space-x-1">
+                        <FileText className="w-4 h-4" />
+                        <span className="capitalize">{initiative.categoria || 'Sin categoría'}</span>
+                      </div>
+                      {initiative.impacto && (
+                        <div className="flex items-center space-x-1">
+                          <TrendingUp className="w-4 h-4" />
+                          <span className="line-clamp-1">{initiative.impacto}</span>
+                        </div>
+                      )}
+                    </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="text-primary font-semibold">{initiative.category}</span>
-                  <ArrowRight className="w-5 h-5 text-primary group-hover:translate-x-2 transition-transform" />
-                </div>
-
-                {/* Progress bar */}
-                <div className="mt-4">
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${initiative.progress}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1 }}
-                      className="h-full bg-gradient-to-r from-primary to-indigo-600"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-primary font-semibold capitalize">{initiative.categoria || 'General'}</span>
+                      <ArrowRight className="w-5 h-5 text-primary group-hover:translate-x-2 transition-transform" />
+                    </div>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <Lightbulb className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-600">No hay iniciativas disponibles</p>
+            </div>
+          )}
 
           <div className="text-center">
             <Link
@@ -364,31 +381,47 @@ function Home() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {students && students.map((student, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group bg-white p-6 rounded-3xl border-2 border-gray-100 hover:border-primary/30 hover:shadow-xl transition-all-300 text-center"
-              >
-                <div className="text-6xl mb-4">{student.avatar}</div>
-                <h4 className="text-lg font-bold text-darkGray mb-2">{student.name}</h4>
-                <div className="flex flex-wrap gap-1 justify-center mb-4">
-                  {student.tech && student.tech.split(', ').map((tech, i) => (
-                    <span key={i} className="bg-primary/10 text-primary px-2 py-1 rounded-lg text-xs font-semibold">
-                      {tech}
+          {loadingStudents ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600">Cargando estudiantes...</p>
+            </div>
+          ) : students.length > 0 ? (
+            <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
+              {students.map((student, index) => (
+                <Link key={student.id_usuario || index} to={`/estudiantes/${student.id_usuario}`}>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="group bg-white p-6 rounded-3xl border-2 border-gray-100 hover:border-primary/30 hover:shadow-xl transition-all-300 text-center cursor-pointer"
+                  >
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-indigo-700 flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
+                      {student.nombre ? student.nombre.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                    <h4 className="text-lg font-bold text-darkGray mb-2 line-clamp-1">{student.nombre || 'Sin nombre'}</h4>
+                    <div className="flex flex-wrap gap-1 justify-center mb-4">
+                      {student.tecnologias ? student.tecnologias.split(',').slice(0, 2).map((tech, i) => (
+                        <span key={i} className="bg-primary/10 text-primary px-2 py-1 rounded-lg text-xs font-semibold">
+                          {tech.trim()}
+                        </span>
+                      )) : (
+                        <span className="text-xs text-gray-400">Sin tecnologías</span>
+                      )}
+                    </div>
+                    <span className="text-primary font-semibold text-sm hover:underline inline-flex items-center">
+                      Ver Perfil <ArrowRight className="w-3 h-3 ml-1" />
                     </span>
-                  ))}
-                </div>
-                <button className="text-primary font-semibold text-sm hover:underline">
-                  Ver Perfil →
-                </button>
-              </motion.div>
-            ))}
-          </div>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-600">No hay estudiantes disponibles</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -410,50 +443,76 @@ function Home() {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {projects && projects.map((project, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-gradient-to-br from-white to-gray-50 p-8 rounded-3xl border-2 border-gray-100 hover:shadow-2xl transition-all-300"
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-2xl font-bold text-darkGray">{project.name}</h3>
-                  <Activity className="w-6 h-6 text-primary" />
-                </div>
+          {loadingProjects ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600">Cargando proyectos...</p>
+            </div>
+          ) : projects.length > 0 ? (
+            <div className="grid md:grid-cols-3 gap-8">
+              {projects.map((project, index) => (
+                <Link key={project.id_proyecto || index} to={`/proyectos/${project.id_proyecto}`}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-gradient-to-br from-white to-gray-50 p-8 rounded-3xl border-2 border-gray-100 hover:shadow-2xl transition-all-300 cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="bg-gradient-to-br from-primary to-indigo-700 p-3 rounded-2xl">
+                        <Rocket className="w-6 h-6 text-white" />
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${
+                        project.estado === 'completado' ? 'bg-green-100 text-green-700' :
+                        project.estado === 'activo' ? 'bg-blue-100 text-blue-700' :
+                        'bg-gray-100 text-gray-600'
+                      }`}>
+                        {project.estado || 'activo'}
+                      </span>
+                    </div>
 
-                <div className="mb-4">
-                  <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-                    <span>Progreso</span>
-                    <span className="font-bold text-primary">{project.progress}%</span>
-                  </div>
-                  <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${project.progress}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.2 }}
-                      className="h-full bg-gradient-to-r from-primary to-indigo-600"
-                    />
-                  </div>
-                </div>
+                    <h3 className="text-2xl font-bold text-darkGray mb-3 line-clamp-2">{project.titulo}</h3>
 
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center space-x-2 text-gray-600">
-                    <UserCheck className="w-4 h-4" />
-                    <span>Coord: {project.coordinator}</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-gray-600">
-                    <Code2 className="w-4 h-4" />
-                    <span>{project.tech}</span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                        <span>Progreso</span>
+                        <span className="font-bold text-primary">{project.progreso || 0}%</span>
+                      </div>
+                      <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${project.progreso || 0}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1.2 }}
+                          className="h-full bg-gradient-to-r from-primary to-indigo-600"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 text-sm">
+                      {project.coordinator && (
+                        <div className="flex items-center space-x-2 text-gray-600">
+                          <UserCheck className="w-4 h-4" />
+                          <span>Coord: {project.coordinator.nombre || 'Sin coordinador'}</span>
+                        </div>
+                      )}
+                      {project.initiative && (
+                        <div className="flex items-center space-x-2 text-gray-600">
+                          <Code2 className="w-4 h-4" />
+                          <span className="line-clamp-1">{project.initiative.nombre || 'Sin iniciativa'}</span>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <Rocket className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-600">No hay proyectos activos</p>
+            </div>
+          )}
         </div>
       </section>
 

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 from datetime import datetime
 from app.schemas.role import Role
 
@@ -9,6 +9,11 @@ class UserBase(BaseModel):
     github: str | None = None
     tecnologias: str | None = None
     foto: str | None = None
+    hoja_vida: str | None = None # Campo para hoja de vida (CV)
+    bio: str | None = None # Nuevo campo
+    sitio_web: str | None = None # Nuevo campo
+    direccion: str | None = None # Nuevo campo
+    identificador_fiscal: str | None = None # Nuevo campo
     id_rol: int | None = None
 
 class UserCreate(UserBase):
@@ -21,8 +26,7 @@ class UserInDBBase(UserBase):
     id_usuario: int
     fecha_registro: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class User(UserInDBBase):
     role: Role | None = None # Relationship to Role schema

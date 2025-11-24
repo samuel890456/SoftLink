@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+from fastapi import UploadFile # Nuevo
 
 class DocumentoIniciativaBase(BaseModel):
     id_iniciativa: int
@@ -9,11 +10,16 @@ class DocumentoIniciativaBase(BaseModel):
 class DocumentoIniciativaCreate(DocumentoIniciativaBase):
     pass
 
+# Nuevo esquema para la subida de archivos
+class DocumentoIniciativaUpload(BaseModel):
+    id_iniciativa: int
+    tipo: str | None = None
+    file: UploadFile # El archivo en sí
+
 class DocumentoIniciativaUpdate(DocumentoIniciativaBase):
     pass
 
 class DocumentoIniciativa(DocumentoIniciativaBase):
     id_doc: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

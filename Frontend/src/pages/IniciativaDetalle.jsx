@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import iniciativasService from '../services/iniciativasService';
+import postulacionesService from '../services/postulacionesService';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 import Card from '../components/Card';
-import { Lightbulb, Calendar, Users, TrendingUp, FileText, ArrowLeft, CheckCircle, Award } from 'lucide-react';
+import { Lightbulb, Calendar, Users, TrendingUp, FileText, ArrowLeft, CheckCircle, Award, AlertCircle } from 'lucide-react';
 
 function IniciativaDetalle() {
   const { id } = useParams();
@@ -14,12 +15,27 @@ function IniciativaDetalle() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [postulation, setPostulation] = useState(null);
+  const [applying, setApplying] = useState(false);
+  const [applyError, setApplyError] = useState(null);
+  const [applySuccess, setApplySuccess] = useState(null);
+
   useEffect(() => {
-    const fetchInitiative = async () => {
+    const fetchInitiativeAndPostulation = async () => {
       try {
         setLoading(true);
         const response = await iniciativasService.getIniciativaById(id);
-        setInitiative(response.data);
+        setInitiative(response);
+
+        if (user && user.id_rol === 2) { // Estudiante
+          try {
+            const myPostulations = await postulacionesService.getPostulaciones();
+            const existing = myPostulations.find(p => p.id_iniciativa === parseInt(id));
+            setPostulation(existing);
+          } catch (err) {
+            console.error("Error checking postulations", err);
+          }
+        }
       } catch (err) {
         console.error("Error fetching initiative details:", err);
         setError("Error al cargar los detalles de la iniciativa.");
@@ -27,8 +43,27 @@ function IniciativaDetalle() {
         setLoading(false);
       }
     };
-    fetchInitiative();
-  }, [id]);
+    fetchInitiativeAndPostulation();
+  }, [id, user]);
+
+  const handlePostular = async () => {
+    if (!user) return;
+    setApplying(true);
+    setApplyError(null);
+    try {
+      const newPostulation = await postulacionesService.createPostulacion({
+        id_iniciativa: parseInt(id),
+        mensaje: "Me gustaría participar en esta iniciativa."
+      });
+      setPostulation(newPostulation);
+      setApplySuccess("¡Te has postulado exitosamente!");
+    } catch (err) {
+      console.error("Error applying:", err);
+      setApplyError(err.response?.data?.detail || "Error al postularse. Inténtalo de nuevo.");
+    } finally {
+      setApplying(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -69,6 +104,7 @@ function IniciativaDetalle() {
 
   // Check if user is coordinator (assuming id_rol 1 for coordinator)
   const isCoordinator = user && user.id_rol === 1; // Adjust role ID as per backend
+  const isStudent = user && user.id_rol === 2;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -92,11 +128,10 @@ function IniciativaDetalle() {
                 <p className="text-gray-600 text-lg capitalize">{initiative.category}</p>
               </div>
             </div>
-            <span className={`px-4 py-2 rounded-full text-sm font-semibold capitalize ${
-              initiative.status === 'completada' ? 'bg-green-100 text-accent' :
-              initiative.status === 'en desarrollo' ? 'bg-blue-100 text-primary' :
-              'bg-yellow-100 text-yellow-700'
-            }`}>
+            <span className={`px-4 py-2 rounded-full text-sm font-semibold capitalize ${initiative.status === 'completada' ? 'bg-green-100 text-accent' :
+                initiative.status === 'en desarrollo' ? 'bg-blue-100 text-primary' :
+                  'bg-yellow-100 text-yellow-700'
+              }`}>
               {initiative.status}
             </span>
           </div>
@@ -145,6 +180,20 @@ function IniciativaDetalle() {
             </div>
           )}
 
+          {/* Mensajes de Estado de Postulación */}
+          {applySuccess && (
+            <div className="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center">
+              <CheckCircle className="w-5 h-5 mr-2" />
+              {applySuccess}
+            </div>
+          )}
+          {applyError && (
+            <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center">
+              <AlertCircle className="w-5 h-5 mr-2" />
+              {applyError}
+            </div>
+          )}
+
           {/* Acciones */}
           <div className="flex justify-end space-x-4 mt-8">
             {isCoordinator ? (
@@ -152,12 +201,35 @@ function IniciativaDetalle() {
                 <Award className="w-5 h-5" />
                 <span>Convertir en Proyecto</span>
               </Button>
-            ) : (
-              <Button variant="primary" className="flex items-center space-x-2">
-                <CheckCircle className="w-5 h-5" />
-                <span>Postularme a esta Iniciativa</span>
-              </Button>
-            )}
+            ) : isStudent ? (
+              postulation ? (
+                <div className="flex items-center space-x-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">
+                  <CheckCircle className="w-5 h-5" />
+                  <span className="font-medium">
+                    {postulation.estado === 'pendiente' ? 'Postulación Pendiente' :
+                      postulation.estado === 'aceptada' ? 'Postulación Aceptada' : 'Postulación Rechazada'}
+                  </span>
+                </div>
+              ) : (
+                <Button
+                  variant="primary"
+                  className="flex items-center space-x-2"
+                  onClick={handlePostular}
+                  disabled={applying}
+                >
+                  {applying ? (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                    />
+                  ) : (
+                    <CheckCircle className="w-5 h-5" />
+                  )}
+                  <span>{applying ? 'Postulando...' : 'Postularme a esta Iniciativa'}</span>
+                </Button>
+              )
+            ) : null}
           </div>
         </Card>
       </motion.div>

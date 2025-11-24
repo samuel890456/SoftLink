@@ -24,7 +24,11 @@ function DashboardMetricCard({ metric }) {
       {/* Header con ícono */}
       <div className="flex items-center justify-between mb-6">
         <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shadow-sm">
-          <Icon className="w-7 h-7 text-white" />
+          {typeof Icon === 'string' ? (
+            <span className="text-3xl">{Icon}</span>
+          ) : (
+            <Icon className="w-7 h-7 text-white" />
+          )}
         </div>
         {change && (
           <div className={`flex items-center space-x-1 px-3 py-1 rounded-lg ${

@@ -1,0 +1,73 @@
+FORMATO DE PROPUESTA DE PRACTICA PROFESIONAL
+Área de Programas Informáticos y Telecomunicaciones - APIT
+
+Título del Proyecto o Propuesta a Desarrollar
+
+
+
+Modalidad 	Tecnología en Desarrollo de Software
+Nombre Estudiante	Estiven Cogollo Amante
+Email	estiven_cogollo69231@elpoli.edu.co
+Nombre Líder Practica	Alexis Enrique Cantillo Viera
+
+Email Líder	alexiscantillo@elpoli.edu.co
+Teléfono Líder 	+57 3216470536
+
+Planteamiento del Problema 
+Actualmente, la institución educativa carece de una plataforma digital que centralice los proyectos de desarrollo de software generados por los estudiantes. Esta ausencia limita la visibilidad de las soluciones tecnológicas, dificulta el seguimiento académico y restringe la conexión entre estudiantes, empresas y la comunidad. Además, los procesos de selección y gestión de iniciativas carecen de un sistema automatizado que permita priorizar proyectos con alto impacto social o empresarial. Por ello, se hace necesario diseñar y desarrollar una plataforma institucional que permita registrar, gestionar y mostrar los proyectos realizados por los estudiantes de Tecnología en Desarrollo de Software.
+
+
+Justificación 
+El proyecto busca fortalecer la formación práctica de los estudiantes al ofrecer una plataforma institucional que actúe como un espacio de conexión entre el entorno académico y el sector productivo. A través de esta herramienta, los estudiantes podrán participar en proyectos reales, desarrollar experiencia profesional y demostrar sus competencias técnicas. Asimismo, la institución podrá posicionarse como referente en innovación y talento tecnológico regional. La implementación de esta plataforma fomentará el trabajo colaborativo, la visibilidad de las iniciativas estudiantiles y la creación de oportunidades de vinculación laboral y emprendimiento.
+
+
+
+Alcance 
+El proyecto general comprende el diseño, desarrollo e implementación de una plataforma web que facilite la gestión de proyectos de software institucionales. Esta incluirá módulos para el registro de iniciativas, perfiles estudiantiles, modalidad FreeLancer, evaluación de proyectos y seguimiento de resultados. Dentro de este contexto, el alcance de la práctica profesional de Estiven Cogollo Amante se centra en las dos primeras etapas del proyecto:
+1. Definición de la arquitectura del sitio web y diseño de la interfaz.
+2. Desarrollo inicial de la plataforma web, incluyendo el registro de iniciativas y el diseño del módulo de perfiles estudiantiles.
+
+
+Objetivo General  
+Desarrollar una plataforma web institucional que integre el registro, gestión y visibilidad de proyectos de desarrollo de software, fomentando la participación de los estudiantes y el vínculo con el entorno empresarial y social.
+
+
+Objetivos Específicos 
+1.	• Diseñar la arquitectura tecnológica y estructura general del sitio web.
+• Implementar el desarrollo inicial de la plataforma, incluyendo los módulos base de registro y perfiles.
+2.	• Facilitar la comunicación entre estudiantes, empresas y coordinadores mediante herramientas digitales integradas.
+3.	• Promover el uso de software libre para garantizar la accesibilidad y escalabilidad del sistema.
+
+4.	• Contribuir al posicionamiento institucional como referente regional en innovación y desarrollo tecnológico.
+5.	
+
+
+Semana	Fecha	Actividades Técnicas
+	Responsable
+Semana 1
+	
+
+1 - 7 octubre	Levantamiento de requerimientos técnicos y funcionales. Análisis de necesidades y definición del alcance.	Estiven Cogollo Amante
+Semana 2	8 - 14 octubre
+	Diseño de la arquitectura del sistema (frontend, backend, base de datos). Selección de tecnologías.
+	Estiven Cogollo Amante
+Semana 3	15 - 21 octubre
+	Diseño UI/UX, creación de prototipos y estructura de navegación. Validación con el tutor.	Estiven Cogollo Amante
+Semana 4	22 - 31 octubre
+	Modelado de base de datos y endpoints iniciales. Documentación técnica y ajustes al diseño.	Estiven Cogollo Amante
+Semana 5	1 - 7 noviembre
+	Configuración del entorno de desarrollo e implementación base del proyecto (frontend y backend).	Estiven Cogollo Amante
+Semana 6	8 - 14 noviembre
+	
+Desarrollo del módulo de registro de iniciativas. Conexión a base de datos y pruebas iniciales.	Estiven Cogollo Amante
+Semana 7	15 - 21 noviembre
+	
+
+Desarrollo del módulo de perfiles estudiantiles. Integración de interfaz y backend.	Estiven Cogollo Amante
+Semana 8	
+22 - 30 noviembre
+	
+Pruebas integrales, revisión de código, documentación final y presentación de	Estiven Cogollo Amante
+
+
+

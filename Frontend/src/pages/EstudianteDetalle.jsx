@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import usuariosService from '../services/usuariosService';
-import proyectosService from '../services/proyectosService'; // Assuming a service to get projects by student
+import proyectosEstudiantesService from '../services/proyectosEstudiantesService';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import Avatar from '../components/Avatar';
-import { ArrowLeft, Mail, Code, Github, Briefcase, Activity, UserCheck } from 'lucide-react';
+import { ArrowLeft, Mail, Code, Github, Briefcase, Activity, UserCheck, MessageCircle } from 'lucide-react';
 
 function EstudianteDetalle() {
   const { id } = useParams();
@@ -22,12 +22,18 @@ function EstudianteDetalle() {
       try {
         setLoading(true);
         const studentResponse = await usuariosService.getUsuarioById(id);
-        setStudent(studentResponse.data);
+        setStudent(studentResponse);
 
-        // Fetch projects associated with this student (assuming an endpoint or filter)
-        // For now, let's assume proyectosService.getProyectos can take a studentId filter
-        const projectsResponse = await proyectosService.getProyectos({ studentId: id });
-        setStudentProjects(projectsResponse.data.data || []);
+        // Fetch projects associated with this student using proyectosEstudiantesService
+        try {
+          const projectsResponse = await proyectosEstudiantesService.getProyectosForStudent(id);
+          // Los proyectos vienen en projectStudents, necesitamos extraer los proyectos
+          const projects = projectsResponse.map(ps => ps.project).filter(p => p !== null && p !== undefined);
+          setStudentProjects(projects);
+        } catch (projectErr) {
+          console.error("Error fetching student projects:", projectErr);
+          setStudentProjects([]);
+        }
 
       } catch (err) {
         console.error("Error fetching student details:", err);
@@ -95,10 +101,13 @@ function EstudianteDetalle() {
             <Avatar src={student.foto} alt={student.nombre} initials={student.nombre} size="xl" />
             <div className="text-center md:text-left">
               <h1 className="text-4xl font-poppins font-bold text-darkGray mb-2">{student.nombre}</h1>
-              <p className="text-gray-600 text-lg mb-4">{student.email}</p>
-              <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+              <p className="text-gray-600 text-lg mb-1">{student.email}</p>
+              {student.telefono && <p className="text-gray-600 text-lg mb-1">Teléfono: {student.telefono}</p>}
+              {student.bio && <p className="text-gray-700 text-base mb-4">{student.bio}</p>} {/* Nuevo campo bio */}
+              {student.fecha_registro && <p className="text-gray-500 text-sm">Miembro desde: {new Date(student.fecha_registro).toLocaleDateString()}</p>}
+              <div className="flex flex-wrap gap-2 justify-center md:justify-start mt-4">
                 {student.tecnologias && student.tecnologias.length > 0 ? (
-                  student.tecnologias.map((tech, i) => (
+                  student.tecnologias.split(', ').map((tech, i) => (
                     <span key={i} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-semibold">
                       {tech}
                     </span>
@@ -128,18 +137,18 @@ function EstudianteDetalle() {
           {studentProjects.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {studentProjects.map((project) => (
-                <Card key={project.id} className="p-6 hover:shadow-md transition-shadow">
+                <Card key={project.id_proyecto} className="p-6 hover:shadow-md transition-shadow">
                   <h3 className="text-xl font-semibold text-darkGray mb-2">{project.titulo}</h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{project.descripcion}</p>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{project.descripcion || 'Sin descripción'}</p>
                   <div className="flex items-center space-x-2 text-sm text-gray-500">
                     <Briefcase className="w-4 h-4" />
                     <span>Estado: {project.estado || 'N/A'}</span>
                   </div>
                   <div className="flex items-center space-x-2 text-sm text-gray-500 mt-2">
                     <Activity className="w-4 h-4" />
-                    <span>Progreso: {project.progress || 0}%</span>
+                    <span>Progreso: {project.progreso || 0}%</span>
                   </div>
-                  <Link to={`/proyectos/${project.id}`} className="text-primary hover:underline mt-4 block">Ver Detalles</Link>
+                  <Link to={`/proyectos/${project.id_proyecto}`} className="text-primary hover:underline mt-4 block">Ver Detalles</Link>
                 </Card>
               ))}
             </div>
@@ -147,6 +156,23 @@ function EstudianteDetalle() {
             <div className="text-center text-gray-500 py-8">
               <Briefcase className="w-12 h-12 mx-auto mb-4" />
               <p>Este estudiante aún no tiene proyectos asociados.</p>
+            </div>
+          )}
+
+          {/* Botón de Enviar Mensaje - Solo si el usuario actual no es el estudiante */}
+          {currentUser && !isCurrentUser && (
+            <div className="mt-6">
+              <Button 
+                variant="primary" 
+                className="flex items-center space-x-2"
+                onClick={() => {
+                  // Aquí se puede implementar la funcionalidad de envío de mensajes
+                  alert('Funcionalidad de mensajería próximamente');
+                }}
+              >
+                <MessageCircle className="w-5 h-5" />
+                <span>Enviar Mensaje</span>
+              </Button>
             </div>
           )}
         </Card>

@@ -1,0 +1,173 @@
+Proyecto de Plataforma de Desarrollo de Software Institucional: Innovación y Formación Profesional para el Futuro
+Objetivo del Proyecto:
+El objetivo principal de este proyecto es crear una plataforma web destinada a facilitar el registro, desarrollo y seguimiento de soluciones tecnológicas por parte de los estudiantes de la carrera de Tecnología en Desarrollo de Software. A través de este sitio, los estudiantes podrán involucrarse en proyectos reales que solucionen necesidades de las comunidades o empresas, bajo un esquema de convocatoria abierta y modalidad FreeLancer. Además, se busca mostrar la calidad de los desarrollos realizados por los estudiantes, posicionar a la institución como un referente en desarrollo de software y generar un canal de conexión con empresas que busquen talentos emergentes en la región.
+
+Componentes del Proyecto:
+1.	Banco de Datos de Iniciativas para Desarrollo:
+Objetivo: Permitir a las personas, empresas o instituciones registrar iniciativas que requieran soluciones tecnológicas.
+Características:
+o	Registro de Iniciativas: Los interesados podrán registrar sus necesidades a través de un formulario en línea accesible mediante convocatorias abiertas. La plataforma permitirá definir el tipo de iniciativa (social, empresarial, educativa, etc.), el sector, y la problemática que se busca resolver.
+o	Descripción Detallada: Cada registro de iniciativa deberá incluir:
+	Nombre de la iniciativa.
+	Descripción detallada del proyecto.
+	Problemática que se desea resolver.
+	Impacto esperado y objetivos de la iniciativa.
+	Documentación complementaria (fotos, planos, documentos técnicos, etc.).
+o	Visibilidad para Estudiantes: Las iniciativas registradas serán visibles para los estudiantes que podrán decidir si postulan su participación en el proyecto.
+2.	Criterios de Selección para Iniciativas:
+Objetivo: Establecer un sistema transparente de selección de iniciativas que sean viables para el desarrollo por parte de los estudiantes.
+Características:
+o	Criterios Públicos: Se definirán y publicarán criterios claros para la selección de las iniciativas. Estos criterios pueden incluir la viabilidad técnica, el impacto potencial, la relevancia social, entre otros.
+o	Clasificación y Prioridad: El coordinador del proyecto podrá clasificar y priorizar las iniciativas según estos criterios, redirigiendo las mejores opciones a los estudiantes para su desarrollo.
+o	Sistema de Clasificación Automática: Un sistema de puntuación automática que permita evaluar la relevancia e impacto de las iniciativas de acuerdo con los parámetros establecidos. Esto permitirá seleccionar rápidamente las propuestas más prometedoras.
+3.	Perfil de Estudiantes y Capacidades Institucionales:
+Objetivo: Mostrar las capacidades y proyectos previos de los estudiantes y la institución para posicionarlos como desarrolladores competentes en el ámbito regional.
+Características:
+o	Portafolio Estudiantil: El sitio contará con una sección donde los estudiantes podrán crear su perfil, destacando las tecnologías y lenguajes de programación que dominan (Java, Python, JavaScript, etc.), así como los proyectos anteriores que hayan desarrollado.
+o	Proyectos Realizados: Los estudiantes podrán enlazar sus proyectos previos o código abierto en repositorios públicos (como GitHub).
+o	Perfiles Dinámicos: Los perfiles permitirán a los estudiantes mostrar su experiencia, destacando sus fortalezas y habilidades específicas.
+4.	Modalidad FreeLancer y Experiencia de Graduación:
+Objetivo: Gestionar el desarrollo de los proyectos bajo la modalidad FreeLancer, ofreciendo a los estudiantes del 6to semestre una experiencia práctica que les sirva como experiencia de graduación.
+Características:
+o	Plataforma de Trabajo Freelance: La plataforma deberá ofrecer herramientas para gestionar proyectos de manera freelance, donde los estudiantes puedan trabajar de manera independiente o en equipos. Esto incluirá la asignación de tareas, seguimiento de progreso y la posibilidad de negociar plazos de entrega con los interesados en las iniciativas.
+o	Sistema de Evaluación Académica: Los proyectos serán evaluados tanto por el coordinador del proyecto como por el interesado en la iniciativa, permitiendo una evaluación integral basada en criterios de desempeño técnico, calidad de código y cumplimiento de objetivos.
+5.	Establecimiento de Tiempos de Desarrollo y Evaluación:
+Objetivo: Gestionar los tiempos de desarrollo de cada proyecto, asegurando que se cumplan los plazos establecidos y que la calidad sea evaluada constantemente.
+Características:
+o	Calendario de Proyectos: Cada proyecto tendrá un calendario con los plazos de entrega, los hitos de desarrollo y las evaluaciones intermedias.
+o	Seguimiento Continuo: El coordinador del proyecto podrá realizar un seguimiento periódico del progreso de los estudiantes y proporcionar retroalimentación constante.
+o	Evaluación Final: La evaluación final se realizará con indicadores de desempeño (calidad del código, cumplimiento de objetivos, satisfacción de los interesados) y servirá como parte de la experiencia de graduación.
+
+Objetivos Secundarios:
+•	Software Libre: Todos los proyectos desarrollados serán software libre, asegurando que las soluciones sean accesibles y mejorables por la comunidad.
+•	Posicionamiento de la Institución: A través de los proyectos, se pretende que las empresas de la región reconozcan la calidad de los desarrollos realizados por los estudiantes, facilitando la contratación de practicantes y futuros empleados.
+•	Laboratorio de Desarrollo: La plataforma servirá como un laboratorio de desarrollo dentro de la institución, donde los estudiantes podrán practicar y mejorar sus habilidades en proyectos reales.
+•	Creación de Empresas: A largo plazo, la plataforma podrá convertirse en un punto de partida para la creación de startups o empresas emergentes, brindando a los estudiantes las herramientas para emprender.
+
+Siguientes Pasos:
+1.	Definición de la arquitectura del sitio web y diseño de la interfaz:
+o	Contratar un equipo de diseñadores y desarrolladores web para la creación del prototipo y la interfaz de usuario (UI/UX).
+o	Definir la estructura de la base de datos para el almacenamiento de las iniciativas, estudiantes y proyectos.
+2.	Desarrollo de la plataforma web:
+o	Iniciar el desarrollo utilizando tecnologías adecuadas para una plataforma web funcional (HTML5, CSS3, JavaScript, Node.js, etc.).
+o	Integrar la funcionalidad de registro de iniciativas, criterios de selección, perfiles de estudiantes y sistema de gestión de proyectos.
+3.	Estrategia de promoción de la plataforma:
+o	Crear campañas de promoción para captar tanto iniciativas de desarrollo como empresas que necesiten colaboradores para sus proyectos.
+o	Organizar talleres o webinars de presentación para atraer estudiantes y empresas.
+4.	Establecimiento de un sistema de seguimiento y evaluación de los proyectos:
+o	Desarrollar un sistema robusto para realizar el seguimiento de los proyectos, con herramientas de retroalimentación para supervisores y estudiantes.
+o	Implementar un sistema de evaluación de proyectos al finalizar cada uno, asegurando la calidad y el cumplimiento de los objetivos.
+
+Este proyecto tiene un gran potencial para conectar a la comunidad estudiantil con el mercado laboral regional y posicionar a la institución como un referente en desarrollo de software y formación profesional.
+
+ 
+Estructura del Sitio Web:
+
+1. Página de Inicio (Home)
+•	Encabezado (Header):
+o	Logo de la institución.
+o	Menú de navegación: Inicio, Iniciativas, Estudiantes, Modalidad FreeLancer, Proyectos, Contacto.
+o	Barra de búsqueda.
+•	Sección Principal:
+o	Bienvenida: Breve introducción al proyecto.
+o	Objetivos del Proyecto: Descripción del propósito del sitio y su impacto en la comunidad.
+o	Convocatorias Abiertas: Banner o slider que resalta las convocatorias activas de iniciativas para desarrollo.
+o	Testimonios: Opiniones de estudiantes y empresas sobre el proyecto.
+•	Llamada a la Acción (CTA):
+o	Botones de acción: "Ver Iniciativas", "Crear una Iniciativa", "Registrar como Estudiante", "Conocer más sobre la Modalidad FreeLancer".
+
+2. Iniciativas
+•	Sub-sección: Registrar Iniciativa:
+o	Formulario de Registro:
+	Nombre de la iniciativa.
+	Descripción detallada del problema a resolver.
+	Categoría (social, empresarial, educativo, etc.).
+	Impacto esperado.
+	Subida de documentos adicionales (si aplica).
+	Botón de envío: "Registrar Iniciativa".
+•	Sub-sección: Ver Iniciativas Registradas:
+o	Lista de Iniciativas:
+	Filtro por categoría, estado (pendiente, en desarrollo, completada).
+	Vista previa de la iniciativa (nombre, breve descripción).
+	Botón de acción: "Postularme para el Proyecto" (si eres estudiante).
+	Clasificación de Iniciativas: Posibilidad de que los coordinadores prioricen o clasifiquen las iniciativas.
+
+3. Estudiantes
+•	Sub-sección: Perfil del Estudiante:
+o	Formulario de Registro del Estudiante:
+	Nombre completo, tecnologías que maneja (Java, Python, etc.), habilidades.
+	Subir portafolio: Enlace a GitHub o proyectos previos.
+	Proyectos en los que ha trabajado: Lista con breves descripciones.
+	Botón de Enviar Perfil.
+•	Sub-sección: Ver Estudiantes:
+o	Directorio de Estudiantes:
+	Filtro por tecnología, proyectos realizados, semestre.
+	Botón de acción: "Ver Perfil Detallado".
+•	Sub-sección: Crear Proyecto:
+o	Los estudiantes podrán registrar los proyectos que desarrollan en la plataforma.
+
+4. Modalidad FreeLancer y Experiencia de Graduación
+•	Explicación de Modalidad FreeLancer:
+o	Descripción: Explicar cómo se gestionan los proyectos en modalidad freelance (horarios, pagos, plazos).
+o	Beneficios para los Estudiantes: Experiencia real, posibilidad de creación de portafolio, trabajo práctico.
+•	Proceso de Inscripción:
+o	Formulario de Inscripción: Los estudiantes podrán inscribirse a las convocatorias que se ajusten a su perfil.
+o	Condiciones del Proyecto: Tiempos de entrega, pagos, cronograma.
+•	Evaluación del Proyecto:
+o	Sistema de Evaluación: Detalles sobre cómo serán evaluados los proyectos en cuanto a calidad de código, cumplimiento de objetivos y satisfacción del cliente.
+
+5. Proyectos
+•	Sub-sección: Ver Proyectos Actuales:
+o	Lista de Proyectos Activos: Con información detallada, incluyendo estudiantes asignados, fecha de inicio y finalización, y progreso.
+o	Sub-sección de Hitos del Proyecto:
+	Cada proyecto tendrá su propio sistema de hitos, donde se marcarán las fechas de entrega, retroalimentación de los supervisores y evaluaciones intermedias.
+•	Sub-sección: Proyecto Completado:
+o	Proyectos Completados: Con detalles sobre el impacto generado y los testimonios de los clientes.
+o	Caso de Estudio: Resumen del proceso, los resultados alcanzados y cómo el proyecto cumplió con los objetivos establecidos.
+
+6. Criterios de Selección de Iniciativas
+•	Descripción de los Criterios:
+o	Viabilidad Técnica: ¿Es factible técnicamente?
+o	Impacto Potencial: ¿Qué tan grande es el impacto de la solución en la comunidad o la empresa?
+o	Relevancia Social: ¿La solución tiene un impacto positivo en la sociedad?
+•	Sistema de Clasificación:
+o	Explicar cómo las iniciativas serán clasificadas y priorizadas (puntuación, asignación por categoría, etc.).
+
+7. Contacto y Soporte
+•	Formulario de Contacto:
+o	Nombre, correo, mensaje.
+o	Soporte para estudiantes e interesados.
+o	Dirección física y teléfono de la institución.
+•	Enlace a Redes Sociales:
+o	Enlaces a las redes sociales institucionales y de los proyectos en curso.
+
+8. Área Privada (Acceso Exclusivo)
+•	Acceso para Coordinadores:
+o	Gestión de iniciativas registradas, clasificación de proyectos, seguimiento de desarrollo.
+•	Acceso para Estudiantes:
+o	Visualización de convocatorias activas, inscripciones a proyectos, gestión de proyectos personales.
+•	Acceso para Empresas:
+o	Crear una cuenta empresarial para poder colaborar con proyectos y conocer a los estudiantes para prácticas o empleos.
+
+9. Pie de Página (Footer)
+•	Enlaces rápidos:
+o	Acerca de, Términos y condiciones, Políticas de privacidad.
+•	Redes sociales:
+o	Facebook, Twitter, Instagram, LinkedIn.
+
+Características Técnicas:
+•	Plataforma Backend:
+o	Lenguajes y Frameworks: Python (Django/Flask), Node.js, Ruby on Rails.
+o	Base de Datos: MySQL, PostgreSQL.
+o	Autenticación de usuarios: OAuth, JWT.
+•	Frontend:
+o	Tecnologías: HTML5, CSS3, JavaScript, React o Vue.js.
+o	Integración con API para formularios dinámicos.
+•	Sistema de Evaluación y Feedback:
+o	Implementación de un sistema de calificación con puntuaciones numéricas para la evaluación de los proyectos.
+
+Consideraciones Adicionales:
+1.	Accesibilidad: El sitio debe ser accesible desde dispositivos móviles y de escritorio.
+2.	Escalabilidad: El sistema debe estar diseñado para poder incorporar nuevos módulos a medida que crece la plataforma.
+3.	Seguridad: Implementación de HTTPS, protección de datos sensibles, y autenticación robusta.
+

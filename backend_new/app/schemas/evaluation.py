@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 class EvaluationBase(BaseModel):
     id_proyecto: int
@@ -16,8 +16,7 @@ class EvaluationUpdate(EvaluationBase):
 class EvaluationInDBBase(EvaluationBase):
     id_eval: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class Evaluation(EvaluationInDBBase):
     pass

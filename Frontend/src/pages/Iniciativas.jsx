@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // Import Link
 import { motion } from 'framer-motion';
 import Button from '../components/Button';
 import Card from '../components/Card';
@@ -29,6 +30,7 @@ function Iniciativas() {
   const itemsPerPage = 6; // Definir cuántas iniciativas por página
 
   const { user } = useAuth(); // Get user from AuthContext
+  const navigate = useNavigate(); // Initialize useNavigate
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(initiativeSchema),
   });
@@ -37,14 +39,24 @@ function Iniciativas() {
     setLoading(true);
     try {
       const params = {
-        page: currentPage,
+        skip: (currentPage - 1) * itemsPerPage,
         limit: itemsPerPage,
       };
-      if (filterCategory !== 'all') params.category = filterCategory;
-      if (filterStatus !== 'all') params.status = filterStatus;
       const response = await iniciativasService.getIniciativas(params);
-      setInitiatives(response.data.data || []);
-      setTotalPages(Math.ceil(response.data.meta.total / itemsPerPage));
+      // La API devuelve directamente un array
+      const initiativesData = Array.isArray(response) ? response : (response?.data || []);
+      
+      // Filtrar por categoría y estado si es necesario (ya que la API no lo hace)
+      let filteredInitiatives = initiativesData;
+      if (filterCategory !== 'all') {
+        filteredInitiatives = filteredInitiatives.filter(init => init.categoria === filterCategory);
+      }
+      if (filterStatus !== 'all') {
+        filteredInitiatives = filteredInitiatives.filter(init => init.estado === filterStatus);
+      }
+      
+      setInitiatives(filteredInitiatives);
+      setTotalPages(Math.ceil(filteredInitiatives.length / itemsPerPage) || 1);
     } catch (err) {
       setError('Error al cargar las iniciativas.');
       console.error("Error fetching initiatives:", err);
@@ -60,10 +72,10 @@ function Iniciativas() {
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
-      formData.append('name', data.name);
-      formData.append('description', data.description);
-      formData.append('category', data.category);
-      formData.append('impact', data.impact);
+      formData.append('nombre', data.name);
+      formData.append('descripcion', data.description);
+      formData.append('categoria', data.category);
+      formData.append('impacto', data.impact);
 
       if (data.documents && data.documents.length > 0) {
         for (let i = 0; i < data.documents.length; i++) {
@@ -123,32 +135,32 @@ function Iniciativas() {
       </motion.div>
 
       {/* Create Initiative Button */}
-      {user && (user.id_rol === 1 || user.id_rol === 3) && ( // Only show if Coordinator (1) or Empresa (3)
-        <div className="mb-6 flex justify-end">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+      <div className="mb-6 flex justify-end">
+        {!user ? (
+          <Button
+            onClick={() => navigate('/register')}
+            aria-label="Registrarse para crear una iniciativa"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            Registrarse para Crear
+          </Button>
+        ) : (
+          <Button
             onClick={() => setShowForm(!showForm)}
-            className={`flex items-center space-x-2 px-6 py-3 rounded-2xl font-semibold transition-all-300 focus:outline-none focus:ring-4 focus:ring-primary/30 ${
-              showForm
-                ? 'bg-red-500 text-white hover:bg-red-600'
-                : 'bg-primary text-white hover:bg-indigo-700 hover:shadow-glow'
-            }`}
+            variant={showForm ? 'danger' : 'primary'}
             aria-label={showForm ? "Cancelar creación" : "Crear nueva iniciativa"}
           >
             {showForm ? (
-              <>
-                <span>Cancelar</span>
-              </>
+              'Cancelar'
             ) : (
               <>
-                <Plus className="w-5 h-5" />
-                <span>Nueva Iniciativa</span>
+                <Plus className="w-5 h-5 mr-2" />
+                Nueva Iniciativa
               </>
             )}
-          </motion.button>
-        </div>
-      )}
+          </Button>
+        )}
+      </div>
 
       {/* Create Initiative Form */}
       {showForm && (
@@ -200,7 +212,7 @@ function Iniciativas() {
               <FormInput
                 label="Impacto Esperado"
                 name="impact"
-                type="text"
+                type="textarea"
                 placeholder="Ej: Mejora la calidad de vida de X personas"
                 register={register}
                 error={errors.impact}
@@ -271,9 +283,9 @@ function Iniciativas() {
       {/* Initiatives Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {initiatives.length > 0 ? (
-          initiatives.map((initiative, index) => (
+          initiatives.filter(Boolean).map((initiative, index) => (
             <motion.div
-              key={initiative.id}
+              key={initiative.id_iniciativa}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
@@ -284,34 +296,34 @@ function Iniciativas() {
                     <Lightbulb className="w-6 h-6 text-white" />
                   </div>
                   <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${
-                    initiative.status === 'completada' ? 'bg-green-100 text-accent' :
-                    initiative.status === 'en desarrollo' ? 'bg-blue-100 text-primary' :
+                    initiative.estado === 'completada' ? 'bg-green-100 text-accent' :
+                    initiative.estado === 'en desarrollo' ? 'bg-blue-100 text-primary' :
                     'bg-yellow-100 text-yellow-700'
                   }`}>
-                    {initiative.status}
+                    {initiative.estado || 'pendiente'}
                   </span>
                 </div>
 
                 <h3 className="text-xl font-semibold text-darkGray mb-3 group-hover:text-primary transition-colors">
-                  {initiative.name}
+                  {initiative.nombre}
                 </h3>
 
                 <p className="text-gray-600 text-sm mb-4 flex-grow line-clamp-3">
-                  {initiative.description}
+                  {initiative.descripcion}
                 </p>
 
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <FileText className="w-4 h-4" />
-                    <span className="capitalize">{initiative.category}</span>
+                    <span className="capitalize">{initiative.categoria || 'N/A'}</span>
                   </div>
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <TrendingUp className="w-4 h-4" />
-                    <span>{initiative.impact}</span>
+                    <span>{initiative.impacto || 'N/A'}</span>
                   </div>
                 </div>
 
-                <Link to={`/iniciativas/${initiative.id}`}>
+                <Link to={`/iniciativas/${initiative.id_iniciativa}`}>
                   <Button variant="primary" className="w-full group-hover:shadow-glow">
                     Ver Detalles
                   </Button>

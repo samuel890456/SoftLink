@@ -19,7 +19,7 @@ const iniciativasService = {
   },
 
   getIniciativaById: async (id) => {
-    const response = await api.get(`iniciativas/${id}/`);
+    const response = await api.get(`iniciativas/${id}`);
     return response.data;
   },
 };
